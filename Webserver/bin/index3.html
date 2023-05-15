@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+<title>intro</title>
+</head>
+<body><h3 id='chapter2-空间配置器'>chapter2 空间配置器</h3>
+<p><strong>new</strong>操作符内含3阶段工作：</p>
+<ol start='' >
+<li>调用<code>::operator new</code>配置内存</li>
+<li>调用其后对象的构造函数构造对象</li>
+<li>返回指向该对象的指针</li>
+
+</ol>
+<p><strong>delete</strong>操作符内含2阶段工作：</p>
+<ol start='' >
+<li>调用析构函数</li>
+<li>调用<code>::operator delete</code>释放内存</li>
+
+</ol>
+<p>allocator将这些操作分开</p>
+<p><code>::construct()</code>负责创建对象	<code>::destroy()</code>负责析构对象</p>
+<pre><code class='language-c++' lang='c++'>template&lt;class T1, class T2&gt;
+inline void construct(T1* p, const T2&amp; value){
+    new (p) T1(value);		//placement new
+}
+</code></pre>
+<p>destory()相对复杂，会根据是否有trivial destructor 采取不同的行为</p>
+<p>若有，则什么都不做，否则调用destory</p>
+<p>&nbsp;</p>
+<p>STL的空间配置，为了加速性能(小内存没必要浪费时间走那几步，可以直接建立一个内存池并从中读取)</p>
+<p>STL采用双层级配置器，第一级直接使用<code>malloc() free()</code></p>
+<p>第二级采用不同策略，当配置区块大于128bytes, 则调用第一级</p>
+<pre><code class='language-c' lang='c'># ifdef __USE_MALLOC
+...
+    //第一级配置器
+typedef __malloc_alloc_template&lt;0&gt; malloc_alloc;
+typedef malloc_alloc alloc;
+#else
+...
+    //第二级配置器
+typedef __default_alloc_template&lt;__NODE_ALLOCATOR_THREADS, 0&gt; alloc;
+#endif
+//这两级配置器会被封装到simple_alloc类中以获得统一接口
+</code></pre>
+<p>其中第二级配置器维护16个自由链表，分别大小为8,16... 128 bytes </p>
+<p>申请内存块大小向上取为8的倍数，并在其中分配</p>
+<p>如果当前链表没有内存块了，会向内存池申请两倍于当前申请内存大小的内存</p>
+<p>如果内存池也没有那么多内存，其会将所有内存返回以构造至少一个内存块</p>
+<p>如果一个都构造不了，内存池会先在其他链表中搜寻内存，如果还是没有，</p>
+<p>再调用第一级配置器，就算无法malloc到内存，那里也可以抛出异常</p>
+<p>&nbsp;</p>
+<h3 id='chapter3-迭代器概念与traits编程技法'>chapter3 迭代器概念与traits编程技法</h3>
+<p>迭代器所指对象类型称为迭代器的value_type</p>
+<p>&nbsp;</p>
+<p><mjx-container class="MathJax" jax="SVG" style="position: relative;"><svg xmlns="http://www.w3.org/2000/svg" width="2.926ex" height="1.439ex" role="img" focusable="false" viewBox="0 -442 1293.1 636" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" style="vertical-align: -0.439ex;"><defs><path id="MJX-2-TEX-I-1D45D" d="M23 287Q24 290 25 295T30 317T40 348T55 381T75 411T101 433T134 442Q209 442 230 378L240 387Q302 442 358 442Q423 442 460 395T497 281Q497 173 421 82T249 -10Q227 -10 210 -4Q199 1 187 11T168 28L161 36Q160 35 139 -51T118 -138Q118 -144 126 -145T163 -148H188Q194 -155 194 -157T191 -175Q188 -187 185 -190T172 -194Q170 -194 161 -194T127 -193T65 -192Q-5 -192 -24 -194H-32Q-39 -187 -39 -183Q-37 -156 -26 -148H-6Q28 -147 33 -136Q36 -130 94 103T155 350Q156 355 156 364Q156 405 131 405Q109 405 94 377T71 316T59 280Q57 278 43 278H29Q23 284 23 287ZM178 102Q200 26 252 26Q282 26 310 49T356 107Q374 141 392 215T411 325V331Q411 405 350 405Q339 405 328 402T306 393T286 380T269 365T254 350T243 336T235 326L232 322Q232 321 229 308T218 264T204 212Q178 106 178 102Z"></path><path id="MJX-2-TEX-N-38" d="M70 417T70 494T124 618T248 666Q319 666 374 624T429 515Q429 485 418 459T392 417T361 389T335 371T324 363L338 354Q352 344 366 334T382 323Q457 264 457 174Q457 95 399 37T249 -22Q159 -22 101 29T43 155Q43 263 172 335L154 348Q133 361 127 368Q70 417 70 494ZM286 386L292 390Q298 394 301 396T311 403T323 413T334 425T345 438T355 454T364 471T369 491T371 513Q371 556 342 586T275 624Q268 625 242 625Q201 625 165 599T128 534Q128 511 141 492T167 463T217 431Q224 426 228 424L286 386ZM250 21Q308 21 350 55T392 137Q392 154 387 169T375 194T353 216T330 234T301 253T274 270Q260 279 244 289T218 306L210 311Q204 311 181 294T133 239T107 157Q107 98 150 60T250 21Z"></path><path id="MJX-2-TEX-N-36" d="M42 313Q42 476 123 571T303 666Q372 666 402 630T432 550Q432 525 418 510T379 495Q356 495 341 509T326 548Q326 592 373 601Q351 623 311 626Q240 626 194 566Q147 500 147 364L148 360Q153 366 156 373Q197 433 263 433H267Q313 433 348 414Q372 400 396 374T435 317Q456 268 456 210V192Q456 169 451 149Q440 90 387 34T253 -22Q225 -22 199 -14T143 16T92 75T56 172T42 313ZM257 397Q227 397 205 380T171 335T154 278T148 216Q148 133 160 97T198 39Q222 21 251 21Q302 21 329 59Q342 77 347 104T352 209Q352 289 347 316T329 361Q302 397 257 397Z"></path></defs><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="scale(1,-1)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><use data-c="1D45D" xlink:href="#MJX-2-TEX-I-1D45D"></use></g><g data-mml-node="TeXAtom" transform="translate(536,-150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use data-c="38" xlink:href="#MJX-2-TEX-N-38"></use><use data-c="36" xlink:href="#MJX-2-TEX-N-36" transform="translate(500,0)"></use></g></g></g></g></g></svg></mjx-container><script type="math/tex">p_{86}</script> 使用偏特化</p>
+<pre><code class='language-c++' lang='c++'>template&lt;&lt;class I&gt;
+    struct iterator_traits{
+        typedef typename I::value_type value_type;
+    };
+//现在我们可以这样使用
+template&lt;class T&gt;
+    typename iterator_traits&lt;T&gt;::value_type func(){...}
+
+//偏特化, 我们利用这种机制推导类型，所以不返回指针类型
+//下面演示特性，故未使用 I::value_type 据实际灵活选用
+template&lt;class I&gt;
+    struct iterator_traits&lt;I*&gt;{
+        typedef I value_type;
+    };
+template&lt;class I&gt;
+    struct iterator_traits&lt;const I*&gt;{
+        typedef I value_type;
+    };
+
+template&lt;class I&gt;
+    struct iterator_traits{
+        typedef typename I::iterator_categroy iterator_categroy;
+        typedef typename I::value_type value_type;
+        typedef typename I::difference_type differencedifference_type;
+        typedef typename I::pointer pointer;
+        typedef typename I::reference reference;
+    }
+
+//需要迭代器的difference_type
+//typename iterator_traits&lt;T&gt;::difference_type;
+</code></pre>
+<p>&nbsp;</p>
+<h3 id='chapter4-序列式容器'>chapter4 序列式容器</h3>
+<h5 id='vector'>vector</h5>
+<p>采用random_access_iterator </p>
+<p>因为vector是线性，所以其迭代器实际就是指针</p>
+<p>三个迭代器start, finish, end_of_range 维护一个vector的范围</p>
+<p>动态扩容机制，若要插入大小大于其capacity的数据，则：</p>
+<ol start='' >
+<li>申请一个2倍于原先capacity的空间，若不够再申请</li>
+<li>拷贝旧元素，添加新元素</li>
+<li>释放旧元素，因此迭代器失效</li>
+
+</ol>
+<p>&nbsp;</p>
+<h5 id='list'>list</h5>
+<p>list是一个<strong>双向环形</strong>链表</p>
+<p>迭代器为bidirectional iterator 插入删除迭代器不失效</p>
+<p>环状链表尾端加上一个空白结点，这样只需一个结点就可遍历整个链表</p>
+<p>剩余就是一些list的具体算法</p>
+<p>list只能用member function <code>sort()</code> 因为通用算法<code>sort()</code>只接受random_access_iterator</p>
+<p>&nbsp;</p>
+</body>
+</html>
