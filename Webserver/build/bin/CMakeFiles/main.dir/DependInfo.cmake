@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/tyz/Desktop/C++-learning/linux-highperformance/new/src/http_conn.cpp" "/home/tyz/Desktop/C++-learning/linux-highperformance/new/build/bin/CMakeFiles/main.dir/http_conn.cpp.o"
-  "/home/tyz/Desktop/C++-learning/linux-highperformance/new/src/main.cpp" "/home/tyz/Desktop/C++-learning/linux-highperformance/new/build/bin/CMakeFiles/main.dir/main.cpp.o"
+  "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/src/http_conn.cpp" "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build/bin/CMakeFiles/main.dir/http_conn.cpp.o"
+  "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/src/main.cpp" "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build/bin/CMakeFiles/main.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

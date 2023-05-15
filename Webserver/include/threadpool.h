@@ -85,8 +85,8 @@ threadpool<T>::~threadpool() {
 
 template<typename T>
 void threadpool<T>::run() {
-    std::unique_lock<std::mutex> guard1(queuelocker);
     while (!stop) {
+    	std::unique_lock<std::mutex> guard1(queuelocker);
         queuestat.wait(guard1);
         if(workqueue.empty()){
             continue;

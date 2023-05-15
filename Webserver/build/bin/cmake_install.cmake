@@ -1,4 +1,4 @@
-# Install script for directory: /home/tyz/Desktop/C++-learning/linux-highperformance/new/src
+# Install script for directory: /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

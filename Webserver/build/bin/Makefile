@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/tyz/Desktop/C++-learning/linux-highperformance/new
+CMAKE_SOURCE_DIR = /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/tyz/Desktop/C++-learning/linux-highperformance/new/build
+CMAKE_BINARY_DIR = /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/tyz/Desktop/C++-learning/linux-highperformance/new/build/CMakeFiles /home/tyz/Desktop/C++-learning/linux-highperformance/new/build/bin/CMakeFiles/progress.marks
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f CMakeFiles/Makefile2 bin/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/tyz/Desktop/C++-learning/linux-highperformance/new/build/CMakeFiles 0
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build/CMakeFiles /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build/bin/CMakeFiles/progress.marks
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f CMakeFiles/Makefile2 bin/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f CMakeFiles/Makefile2 bin/clean
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f CMakeFiles/Makefile2 bin/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,22 +97,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f CMakeFiles/Makefile2 bin/preinstall
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f CMakeFiles/Makefile2 bin/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f CMakeFiles/Makefile2 bin/preinstall
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f CMakeFiles/Makefile2 bin/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 bin/CMakeFiles/main.dir/rule:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f CMakeFiles/Makefile2 bin/CMakeFiles/main.dir/rule
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f CMakeFiles/Makefile2 bin/CMakeFiles/main.dir/rule
 .PHONY : bin/CMakeFiles/main.dir/rule
 
 # Convenience name for target.
@@ -122,7 +122,7 @@ main: bin/CMakeFiles/main.dir/rule
 
 # fast build rule for target.
 main/fast:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/build
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/build
 .PHONY : main/fast
 
 http_conn.o: http_conn.cpp.o
@@ -131,7 +131,7 @@ http_conn.o: http_conn.cpp.o
 
 # target to build an object file
 http_conn.cpp.o:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/http_conn.cpp.o
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/http_conn.cpp.o
 .PHONY : http_conn.cpp.o
 
 http_conn.i: http_conn.cpp.i
@@ -140,7 +140,7 @@ http_conn.i: http_conn.cpp.i
 
 # target to preprocess a source file
 http_conn.cpp.i:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/http_conn.cpp.i
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/http_conn.cpp.i
 .PHONY : http_conn.cpp.i
 
 http_conn.s: http_conn.cpp.s
@@ -149,7 +149,7 @@ http_conn.s: http_conn.cpp.s
 
 # target to generate assembly for a file
 http_conn.cpp.s:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/http_conn.cpp.s
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/http_conn.cpp.s
 .PHONY : http_conn.cpp.s
 
 main.o: main.cpp.o
@@ -158,7 +158,7 @@ main.o: main.cpp.o
 
 # target to build an object file
 main.cpp.o:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/main.cpp.o
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/main.cpp.o
 .PHONY : main.cpp.o
 
 main.i: main.cpp.i
@@ -167,7 +167,7 @@ main.i: main.cpp.i
 
 # target to preprocess a source file
 main.cpp.i:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/main.cpp.i
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/main.cpp.i
 .PHONY : main.cpp.i
 
 main.s: main.cpp.s
@@ -176,7 +176,7 @@ main.s: main.cpp.s
 
 # target to generate assembly for a file
 main.cpp.s:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/main.cpp.s
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(MAKE) -f bin/CMakeFiles/main.dir/build.make bin/CMakeFiles/main.dir/main.cpp.s
 .PHONY : main.cpp.s
 
 # Help Target
@@ -205,6 +205,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/tyz/Desktop/C++-learning/linux-highperformance/new/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

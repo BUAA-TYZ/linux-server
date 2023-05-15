@@ -14,7 +14,7 @@ const char* errno_404_form = "The request file was not found on this server\n";
 const char* errno_500_title = "Internal Errno";
 const char* errno_500_form = "There was an unusual problem\n";
 //root directory
-const char* doc_root = "/home/tyz/Desktop/C++-learning/linux-highperformance/new/bin";
+const char* doc_root = "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/bin";
 
 int setnonblock(int sockfd){
     int old_option = fcntl(sockfd, F_GETFL);
