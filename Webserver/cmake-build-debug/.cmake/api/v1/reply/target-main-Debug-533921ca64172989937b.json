@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "/home/tyz/Desktop/C++-learning/linux-highperformance/new/bin/main"
+			"path" : "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/bin/main"
 		}
 	],
 	"backtrace" : 1,
@@ -49,7 +49,7 @@
 			[
 				{
 					"backtrace" : 2,
-					"path" : "/home/tyz/Desktop/C++-learning/linux-highperformance/new/include"
+					"path" : "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/include"
 				}
 			],
 			"language" : "CXX",

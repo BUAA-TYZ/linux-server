@@ -67,7 +67,7 @@ private:
     }
     LINE_STATUS parse_line();
 
-    //functions for responding HTTP
+    // functions for responding HTTP
     void unmap();
     bool add_response(const char* format, ...);
     bool add_content(const char* content);

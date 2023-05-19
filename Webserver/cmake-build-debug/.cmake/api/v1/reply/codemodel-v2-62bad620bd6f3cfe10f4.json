@@ -55,7 +55,7 @@
 				{
 					"directoryIndex" : 1,
 					"id" : "main::@90a2315b7a9c97cd24d2",
-					"jsonFile" : "target-main-Debug-cf475024141bf7d86309.json",
+					"jsonFile" : "target-main-Debug-533921ca64172989937b.json",
 					"name" : "main",
 					"projectIndex" : 0
 				}
@@ -65,8 +65,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/tyz/Desktop/C++-learning/linux-highperformance/new/cmake-build-debug",
-		"source" : "/home/tyz/Desktop/C++-learning/linux-highperformance/new"
+		"build" : "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/cmake-build-debug",
+		"source" : "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver"
 	},
 	"version" : 
 	{

@@ -13,15 +13,15 @@ const char* errno_404_title = "Not Found";
 const char* errno_404_form = "The request file was not found on this server\n";
 const char* errno_500_title = "Internal Errno";
 const char* errno_500_form = "There was an unusual problem\n";
-//root directory
+// root directory
 const char* doc_root = "/home/tyz/Desktop/C++-learning/linux-highperformance/Webserver/bin";
 
-int setnonblock(int sockfd){
+int setnonblock(int sockfd) {
     int old_option = fcntl(sockfd, F_GETFL);
     fcntl(sockfd, F_SETFL, old_option | O_NONBLOCK);
     return old_option;
 }
-void addfd(int epollfd, int sockfd, bool oneshot){
+void addfd(int epollfd, int sockfd, bool oneshot) {
     epoll_event event;
     event.data.fd = sockfd;
     event.events = EPOLLIN | EPOLLET | EPOLLRDHUP;
@@ -31,12 +31,12 @@ void addfd(int epollfd, int sockfd, bool oneshot){
     epoll_ctl(epollfd, EPOLL_CTL_ADD, sockfd, &event);
     setnonblock(sockfd);
 }
-void removefd(int epollfd, int sockfd){
+void removefd(int epollfd, int sockfd) {
     epoll_ctl(epollfd, EPOLL_CTL_DEL, sockfd, nullptr);
     close(sockfd);
 }
 
-void modfd(int epollfd, int sockfd, int ev){
+void modfd(int epollfd, int sockfd, int ev) {
     epoll_event event;
     event.data.fd = sockfd;
     event.events = EPOLLIN | EPOLLET | EPOLLRDHUP | ev;
@@ -54,7 +54,7 @@ void http_conn::close_conn(bool real_close) {
     }
 }
 
-void http_conn::init(int fd, const sockaddr_in& adr, tw_timer* timerr){
+void http_conn::init(int fd, const sockaddr_in& adr, tw_timer* timerr) {
     sockfd = fd;
     clnt_adr = adr;
     timer = timerr;
@@ -64,7 +64,7 @@ void http_conn::init(int fd, const sockaddr_in& adr, tw_timer* timerr){
     init();
 }
 
-void http_conn::init(){
+void http_conn::init() {
     check_state = CHECK_STATE_REQUESTLINE;
     linger = true;
     method = GET;
@@ -78,15 +78,19 @@ void http_conn::init(){
     memset(write_buf, '\0', sizeof(write_buf));
     memset(real_file, '\0', sizeof(real_file));
 }
-
+/**
+ * @brief parse a line by changing /r/n -> /0/0
+ *
+ * @return LINE_STATUS
+ */
 http_conn::LINE_STATUS http_conn::parse_line() {
     char temp;
     for (; check_idx < read_idx; check_idx++) {
         temp = read_buf[check_idx];
         if (temp == '\r') {
-            if (check_idx+1 == read_idx)
+            if (check_idx + 1 == read_idx)
                 return LINE_OPEN;
-            else if (read_buf[check_idx+1] == '\n') {
+            else if (read_buf[check_idx + 1] == '\n') {
                 read_buf[check_idx++] = '\0';
                 read_buf[check_idx++] = '\0';
                 return LINE_OK;
@@ -94,8 +98,8 @@ http_conn::LINE_STATUS http_conn::parse_line() {
             return LINE_BAD;
         }
         else if (temp == '\n') {
-            if (check_idx > 1 && read_buf[check_idx-1] == '\r') {
-                read_buf[check_idx-1] = '\0';
+            if (check_idx > 1 && read_buf[check_idx - 1] == '\r') {
+                read_buf[check_idx - 1] = '\0';
                 read_buf[check_idx++] = '\0';
                 return LINE_OK;
             }
@@ -125,9 +129,14 @@ bool http_conn::read(){
     return true;
 }
 
-/*  GET /example.html HTTP/1.1
-    Host: example.com
-*/
+/**
+ * @brief parse the request line
+ *
+ * @return BAD_REQUEST if fails / NO_REQUEST if successes
+ *
+ * GET /example.html HTTP/1.1
+ * Host: example.com
+ */
 http_conn::HTTP_CODE http_conn::parse_request_line(char *text) {
     url = strpbrk(text, " \t");               //search " \t"
     if (!url)
@@ -137,6 +146,7 @@ http_conn::HTTP_CODE http_conn::parse_request_line(char *text) {
     if (strcasecmp(method, "GET") != 0) {      //ignore upper or lower
         return BAD_REQUEST;
     }
+    this->method = GET;
     printf("User: %d Method: %s\n", sockfd, method);
     url += strspn(url, " \t");
     version = strpbrk(url, " \t");
@@ -150,18 +160,23 @@ http_conn::HTTP_CODE http_conn::parse_request_line(char *text) {
         url+=7;
         url = strchr(url, '/');                 // search '/' after http://
     }
-    if(!url || url[0] != '/')
+    if (!url || url[0] != '/')
         return BAD_REQUEST;
     check_state =  CHECK_STATE_HEADER;
-    printf("change to state: CHECK_STATE_HEADER\n");
+    printf("Change to state: CHECK_STATE_HEADER\n");
     return NO_REQUEST;
 }
-
+/**
+ * @brief parse headers like 'Connection', 'Host'
+ *
+ * @return NO_REQUEST if Content is not empty / GET_REQUEST if finishes
+ *
+ */
 http_conn::HTTP_CODE http_conn::parse_headers(char *text) {
     if (text[0] == '\0') {                // after parse_line(), \r\n -> \0
         if (content_length != 0) {
             check_state = CHECK_STATE_CONTENT;
-            printf("change to state: CHECK_STATE_CONTENT\n");
+            printf("Change to state: CHECK_STATE_CONTENT\n");
             return NO_REQUEST;
         }
         // printf("process file\n");
@@ -184,28 +199,34 @@ http_conn::HTTP_CODE http_conn::parse_headers(char *text) {
         host = text;
     }
     else {
-        printf("unknown\n");
+        printf("Unknown\n");
     }
     return NO_REQUEST;
 }
-
-http_conn::HTTP_CODE http_conn::parse_content(char *text) {     // actually, we don't care this
+/**
+ * @brief Actually, we don't care the content.
+ */
+http_conn::HTTP_CODE http_conn::parse_content(char *text) {
     if (read_idx >= content_length + check_idx) {
         text[content_length] = '\0';
         return GET_REQUEST;
     }
     return NO_REQUEST;
 }
-
+/**
+ * @brief The state machine processes the Send message
+ * @return
+ */
 http_conn::HTTP_CODE http_conn::process_read() {
     LINE_STATUS line_status = LINE_OK;
     HTTP_CODE ret = NO_REQUEST;
     char* text = nullptr;
-    while ((check_state == CHECK_STATE_CONTENT && line_status==LINE_OK) ||
+    while ((check_state == CHECK_STATE_CONTENT && line_status == LINE_OK) ||
             (line_status = parse_line()) == LINE_OK) {
         text = get_line();
+        // next line
         start_line = check_idx;
-        printf("get 1 http line: %s\n", text);
+        printf("Get 1 http line: %s\n", text);
 
         switch (check_state) {
             case CHECK_STATE_REQUESTLINE: {
@@ -216,9 +237,7 @@ http_conn::HTTP_CODE http_conn::process_read() {
             }
             case CHECK_STATE_HEADER: {
                 ret = parse_headers(text);
-                if (ret == BAD_REQUEST)
-                    return BAD_REQUEST;
-                else if (ret == GET_REQUEST)
+                if (ret == GET_REQUEST)
                     return do_request();
                 break;
             }
@@ -235,7 +254,10 @@ http_conn::HTTP_CODE http_conn::process_read() {
     }
     return NO_REQUEST;
 }
-
+/**
+ * @brief Deal with the file
+ * @return HTTP_CODE
+ */
 http_conn::HTTP_CODE http_conn::do_request() {
     strcpy(real_file, doc_root);
     int len = strlen(doc_root);
@@ -381,6 +403,9 @@ bool http_conn::process_write(HTTP_CODE ret) {
     iv_count = 1;
     return true;
 }
+/**
+ * @brief entry function. Threads invoke this.
+ */
 void http_conn::process() {
     HTTP_CODE read_ret = process_read();
     if (read_ret == NO_REQUEST) {

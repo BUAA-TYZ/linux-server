@@ -32,35 +32,35 @@ void sig_handler(int sig) {
     send(pipefd[1], (char*) &sig, sizeof(sig), 0);
     errno = save_errno;
 }
-void addsig (int sig, void(handler)(int), bool restart = true) {
+void addsig(int sig, void(handler)(int), bool restart = true) {
     struct sigaction sa{};
     memset( &sa, '\0', sizeof( sa ) );
     sa.sa_handler = handler;
     if (restart) {
-        sa.sa_flags |= SA_RESTART;					//重启动因信号被中断的系统调用
+        sa.sa_flags |= SA_RESTART;					// 重启动因信号被中断的系统调用
     }
     sigfillset(&sa.sa_mask);
     assert(sigaction(sig, &sa, nullptr) != -1);
 }
 
-void show_error ( int connfd, const char* info ) {
+void show_error(int connfd, const char* info) {
     printf("%s", info);
     send(connfd, info, strlen(info), 0);
     close(connfd);
 }
-void timer_handler () {
+void timer_handler() {
     timer_wheel.tick();
     alarm(5 * TIMESLOT);
 }
-void cb_func (http_conn* user_data) {
-    // close the client
-    printf("close fd %d\n", user_data->sockfd);
+void cb_func(http_conn* user_data) {
+    // Close the client
+    printf("Close fd %d\n", user_data->sockfd);
     user_data->close_conn();
 }
 
 int main (int argc, char* argv[]) {
     if (argc <= 2) {
-        printf("usage: %s ip_address port_number\n", basename(argv[0]));
+        printf("Usage: %s ip_address port_number\n", basename(argv[0]));
         return 1;
     }
     const char* ip = argv[1];
@@ -161,7 +161,7 @@ int main (int argc, char* argv[]) {
             }
             // EPOLLRDHUP: client closes the connection
             else if (events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
-                printf("close %d cause some reasons\n", sockfd);
+                printf("Close %d cause some reasons\n", sockfd);
                 tw_timer* timer = users[sockfd].timer;
                 cb_func(&users[sockfd]);
                     if(timer) {
